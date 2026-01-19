@@ -1,0 +1,117 @@
+.header[data-v-257e7187] {
+  width: 100%;
+  position: relative;
+  height: .71875rem;
+  z-index: 1;
+  background: url(//images.wanjunshijie.com/demo/zhihuixiaoyuan/assets/topbg-40371eb0.png) center center no-repeat;
+  background-size: 100% .71875rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  align-content: flex-start
+}
+
+.canvasGLTFBody[data-v-32acb7da] {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  align-content: flex-start;
+  background: url(//images.wanjunshijie.com/demo/zhihuixiaoyuan/assets/guang-b73396ec.png) center center no-repeat;
+  background-size: contain
+}
+
+.canvasGLTF[data-v-32acb7da] {
+  position: relative;
+  width: 100%;
+  height: 100%
+}
+
+.pa[data-v-32acb7da] {
+  position: absolute;
+  top: 0;
+  left: 0
+}
+
+.label[data-v-32acb7da] {
+  color: red
+}
+
+.messageTag[data-v-32acb7da] {
+  padding: .05208rem;
+  background: #000;
+  font-size: .09375rem;
+  color: #fff;
+  border-radius: .05208rem;
+  margin-top: -.10417rem;
+  margin-left: -.10417rem;
+  position: absolute;
+  visibility: hidden;
+  z-index: 10000!important
+}
+
+.home[data-v-677219a8] {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: url(//images.wanjunshijie.com/demo/zhihuixiaoyuan/assets/bg-3171c3ea.jpg) no-repeat;
+  background-size: 100% 100%
+}
+
+.home .homeMain[data-v-677219a8] {
+  width: 100%;
+  position: relative;
+  height: calc(100% - .71875rem);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  align-content: flex-start
+}
+
+.home .homeMain .popLeft[data-v-677219a8] {
+  background: url(//images.wanjunshijie.com/demo/zhihuixiaoyuan/assets/popBg-93be38c9.png) center center no-repeat;
+  width: 2.25rem;
+  height: 3.49479rem;
+  position: fixed;
+  left: .10417rem;
+  background-size: 100% 100%
+}
+
+.home .homeMain .popLeft .title[data-v-677219a8] {
+  font-size: .125rem;
+  font-family: sucaijishikufangti;
+  font-weight: 400;
+  color: #fff;
+  margin-left: .33854rem;
+  padding-top: .26042rem
+}
+
+.home .homeMain .popLeft .desc[data-v-677219a8] {
+  width: calc(100% - .67708rem);
+  margin: 0 auto;
+  padding-top: .10417rem
+}
+
+.home .homeMain .popLeft .desc p[data-v-677219a8] {
+  font-size: .08333rem;
+  font-family: MicrosoftYaHei;
+  font-weight: 400;
+  color: #fff;
+  margin-top: .10417rem
+}
+
+.home .homeMain .quan[data-v-677219a8] {
+  width: 7.01042rem;
+  height: 5.625rem;
+  position: fixed;
+  top: 0;
+  right: .36458rem
+}
