@@ -665,7 +665,7 @@
                     class="dateselect"
                     v-model="queryEnvironData.dateRange[0]"
                     type="date"
-                    style="margin-left: 2vw; width: 15vw"
+                    style="margin-left: 2vw; width: 15vw;"
                     :picker-options="pickerOptionsEnvironHistory"
                     placeholder="开始日期"
                     @change="searchEnviron">
@@ -679,53 +679,70 @@
                     placeholder="结束日期"
                     @change="searchEnviron">
                   </el-date-picker>
-                </el-form-item>
-                <el-form-item>
                   <el-button
                     type="primary"
                     size="mini"
-                    @click="exportHistoryToXlsx">
+                    style="margin-left: 2vw; padding: 6px 18px"
+                    @click="exportHistory">
                     导出
                   </el-button>
                 </el-form-item>
               </el-form>
             </div>
             <div style="height: 70vh; display: flex; flex-direction: column;">
-              <el-table
+            <el-table
                 :data="showEnvironData"
                 style="width: 100%; margin-top: 1.5vh"
                 height="70vh"
-                :header-cell-style="{ textAlign: 'center', fontSize: '0.85vw', lineHeight: '4vh', Height: '4vh' }"
-                :cell-style="{ textAlign: 'center', fontSize: '0.85vw', lineHeight: '4vh', Height: '4vh' }">
-                <template v-if="queryEnvironData.item[0] == '1'">
+                :header-cell-style="{ textAlign: 'center', fontSize: '1vw', lineHeight: '4vh', Height: '4vh' }"
+                :cell-style="{ textAlign: 'center', fontSize: '1vw', lineHeight: '4vh', Height: '4vh' }">
+                <template v-if="queryEnvironData.item[0] === 'control_param'">
                   <el-table-column prop="time" label="时间" :formatter="formatTimeHistoryShow"></el-table-column>
-                  <el-table-column prop="devName" label="房间" :formatter="formatRoomName"></el-table-column>
-                  <el-table-column prop="temperature" label="温度(℃)" :formatter="formatTemperature"></el-table-column>
-                  <el-table-column prop="humidity" label="湿度(%)" :formatter="formatHumidity"></el-table-column>
+                  <el-table-column prop="name" label="参数名称"></el-table-column>
+                  <el-table-column prop="value" label="参数值"></el-table-column>
+                  <!-- <el-table-column prop="alarmLevel" label="告警级别"></el-table-column>
+                  <el-table-column prop="alarmInfo" label="告警信息"></el-table-column> -->
+                </template>
+                <template v-if="queryEnvironData.item[0] === 'device_status'">
+                  <el-table-column prop="time" label="时间" :formatter="formatTimeHistoryShow"></el-table-column>
+                  <el-table-column prop="deviceName" label="设备名称"></el-table-column>
+                  <el-table-column prop="status" label="状态"></el-table-column>
+                  <!-- <el-table-column prop="alarmLevel" label="告警级别"></el-table-column>
+                  <el-table-column prop="alarmInfo" label="告警信息"></el-table-column> -->
+                </template>
+                <template v-else-if="queryEnvironData.item[0] === 'sensor'">
+                  <el-table-column prop="time" label="时间" :formatter="formatTimeHistoryShow"></el-table-column>
+                  <el-table-column prop="devName" label="设备名" :formatter="formatRoomName"></el-table-column>
+                  <el-table-column prop="value" label="参数值" :formatter="formatTemperature"></el-table-column>
+                  <!-- <el-table-column prop="humidity" label="湿度(%)" :formatter="formatHumidity"></el-table-column>
                   <el-table-column prop="co2" label="CO2(PPM)"></el-table-column>
                   <el-table-column prop="pm25" label="PM2.5(μg/m³)"></el-table-column>
-                  <el-table-column prop="pm10" label="PM10(μg/m³)"></el-table-column>
+                  <el-table-column prop="pm10" label="PM10(μg/m³)"></el-table-column> -->
                 </template>
-                <template v-else-if="queryEnvironData.item[0] == '0'">
+                <!-- <template v-else-if="queryEnvironData.item[0] === 'spray_record'">
                   <el-table-column prop="time" label="时间" :formatter="formatTimeHistoryShow"></el-table-column>
-                  <el-table-column prop="allPower" label="总电量"></el-table-column>
-                  <el-table-column prop="lightPower" label="照明" :formatter="formatNA"></el-table-column>
-                  <el-table-column prop="airconditionPower" label="空调" :formatter="formatNA"></el-table-column>
-                  <el-table-column prop="freshPower" label="新风" :formatter="formatNA"></el-table-column>
+                  <el-table-column prop="productLine" label="产线"></el-table-column>
+                  <el-table-column prop="blockCode" label="炭块编号"></el-table-column>
+                  <el-table-column prop="thickness" label="喷涂厚度"></el-table-column>
+                  <el-table-column prop="speed" label="运行速度"></el-table-column>
+                  <el-table-column prop="result" label="结果"></el-table-column>
+                </template> -->
+                <template v-else-if="queryEnvironData.item[0] === 'product_hourly'">
+                  <el-table-column prop="time" label="时间" :formatter="formatTimeHistoryShow"></el-table-column>
+                  <!-- <el-table-column prop="productLine" label="产线"></el-table-column> -->
+                  <el-table-column prop="quantity" label="产量(块/小时)"></el-table-column>
                 </template>
-                <template v-else-if="queryEnvironData.item[0] == '2'">
+                <template v-else-if="queryEnvironData.item[0] === 'product_daily'">
                   <el-table-column prop="time" label="时间" :formatter="formatTimeHistoryShow"></el-table-column>
-                  <el-table-column prop="devName" label="房间" :formatter="formatACName"></el-table-column>
-                  <el-table-column prop="status" label="状态" :formatter="formatStatus"></el-table-column>
-                  <el-table-column prop="temperature" label="温度(℃)" :formatter="formatNA"></el-table-column>
-                  <el-table-column prop="windSpeed" label="风速" :formatter="formatWindspeed"></el-table-column>
-                  <el-table-column prop="mode" label="模式" :formatter="formatMode"></el-table-column>
+                  <!-- <el-table-column prop="productLine" label="产线"></el-table-column> -->
+                  <el-table-column prop="quantity" label="产量(块/天)"></el-table-column>
                 </template>
-                <template v-else-if="queryEnvironData.item[0] == '3'">
+                <template v-else-if="queryEnvironData.item[0] === 'quality_result'">
                   <el-table-column prop="time" label="时间" :formatter="formatTimeHistoryShow"></el-table-column>
-                  <el-table-column prop="devName" label="房间" :formatter="formatXFName"></el-table-column>
-                  <el-table-column prop="status" label="状态" :formatter="formatStatus"></el-table-column>
-                  <el-table-column prop="windSpeed" label="风速" :formatter="formatWindspeed"></el-table-column>
+                  <!-- <el-table-column prop="productLine" label="产线"></el-table-column> -->
+                  <!-- <el-table-column prop="passCount" label="合格数量"></el-table-column>
+                  <el-table-column prop="failCount" label="不合格数量"></el-table-column> -->
+                  <el-table-column prop="passRate" label="合格率(%)"></el-table-column>
                 </template>
               </el-table>
             </div>
@@ -754,8 +771,6 @@
   import * as echarts from 'echarts';
   import axios from "axios";
   import request from '../../utils/request';
-  import XLSX from 'xlsx';
-  import FileSaver from 'file-saver';
 
   export default {
     name: "dataView_anqiju",
@@ -1056,73 +1071,124 @@
         showEnvironData: [],
         totalRowsEnviron: 0,
         queryEnvironData: {
-          item: ['1', '环境探测器主卧'],
+          item: ['spray_record'],
           dateRange: [],
-          currentPage: 1, // 当前页
-          pageSize: 15, // 每页显示的数据条数
+          currentPage: 1,
+          pageSize: 15,
         },
-        optionsHistory: [{
-          value: '0',
-          label: '电量数据',
-        }, {
-          value: '1',
-          label: '环境数据',
-          children: [{
-            value: '环境探测器客厅',
-            label: '客厅'
-          }, {
-            value: '环境探测器主卧',
-            label: '主卧'
-          }, {
-            value: '环境探测器儿童房',
-            label: '儿童房'
-          }, {
-            value: '环境探测器浴室',
-            label: '卫生间'
-          },]
-        }, {
-          value: '2',
-          label: '空调数据',
-          children: [{
-            value: '空调客厅',
-            label: '客厅'
-          }, {
-            value: '空调主卧',
-            label: '主卧'
-          }, {
-            value: '空调儿童房',
-            label: '儿童房'
-          }, {
-            value: '空调多功能房',
-            label: '多功能房'
+        optionsHistory: [
+          {
+            value: 'control_param',
+            label: '参数配置',
           },
-            {
-              value: '空调厨房',
-              label: '厨房'
-            },
-          ]
-        },{
-          value: '3',
-          label: '新风数据',
-          children: [{
-            value: '新风客厅',
-            label: '客厅'
-          }, {
-            value: '新风主卧',
-            label: '主卧'
-          }, {
-            value: '新风儿童房',
-            label: '儿童房'
-          }, {
-            value: '新风多功能房',
-            label: '多功能房'
+          {
+            value: 'device_status',
+            label: '设备状态',
+            children: [
+              {
+                value: '停止器1',
+                label: '停止器1',
+              },
+              {
+                value: '停止器2',
+                label: '停止器2',
+              },
+              {
+                value: '锁定机构1',
+                label: '锁定机构1',
+              },
+              {
+                value: '锁定机构2',
+                label: '锁定机构2',
+              },
+              {
+                value: '喷枪1',
+                label: '喷枪1',
+              },
+              {
+                value: '喷枪2',
+                label: '喷枪2',
+              },
+              {
+                value: '喷涂机1',
+                label: '喷涂机1',
+              },
+              {
+                value: '喷涂机2',
+                label: '喷涂机2',
+              },
+              {
+                value: '喷涂管路1',
+                label: '喷涂管路1',
+              },
+              {
+                value: '喷涂管路2',
+                label: '喷涂管路2',
+              },
+              {
+                value: '搅拌器1',
+                label: '搅拌器1',
+              },
+              {
+                value: '搅拌器2',
+                label: '搅拌器2',
+              },
+              {
+                value: '进料门',
+                label: '进料门',
+              },
+              {
+                value: '出料门',
+                label: '出料门',
+              },
+            ],
           },
-            {
-              value: '新风厨房',
-              label: '厨房'
-            },
-          ]}
-
+          {
+            value: 'sensor',
+            label: '传感器数据',
+            children: [
+              {
+                value: '涂料桶1',
+                label: '涂料桶1',
+              },
+              {
+                value: '涂料桶2',
+                label: '涂料桶2',
+              },
+              {
+                value: '喷涂管路1',
+                label: '喷涂管路1',
+              },
+              {
+                value: '喷涂管路2',
+                label: '喷涂管路2',
+              },
+              {
+                value: '喷涂机1',
+                label: '喷涂机1',
+              },
+              {
+                value: '喷涂机2',
+                label: '喷涂机2',
+              },
+              {
+                value: '上料管路',
+                label: '上料管路',
+              },
+            ],
+          },
+          {
+            value: 'product_hourly',
+            label: '小时产量',
+          },
+          {
+            value: 'product_daily',
+            label: '日产量',
+          },
+          {
+            value: 'quality_result',
+            label: '质量检测结果',
+          },
         ],
         pickerOptionsEnvironHistory: {
           disabledDate(time) { // 禁用当前时间以后的日期
@@ -5012,19 +5078,16 @@
       // },
 
       openHistoryDialog() {
-        if (!this.queryEnvironData.dateRange || this.queryEnvironData.dateRange.length !== 2) {
-          const end = new Date();
-          const start = new Date();
-          start.setDate(end.getDate() - 7);
-          this.queryEnvironData.dateRange = [start, end];
-        }
         this.historyDialogVisible = true;
-        this.searchEnviron();
       },
 
       searchEnviron() {
 
-        // TODO: 发送查询请求，获取数据
+        const range = this.queryEnvironData.dateRange;
+        if (!range || range.length !== 2 || !range[0] || !range[1]) {
+          return;
+        }
+
         function formatTime1(dateStr) {
           const date = new Date(dateStr);
           const year = date.getFullYear();
@@ -5043,60 +5106,78 @@
 
         let url = "";
         let data = {};
-        //电量数据
-        if (this.queryEnvironData.item[0] == '1') {
-          url = `http://127.0.0.1:8080/getEnvByTimeRange`;
-          data = {
-            deviceName: this.queryEnvironData.item[1],
-            endTime: formatTime2(this.queryEnvironData.dateRange[1]),
-            startTime: formatTime1(this.queryEnvironData.dateRange[0]),
-          };
-          console.log('环境报表参数', data);
 
-        } else if (this.queryEnvironData.item[0] == '2') {
-          url = `http://127.0.0.1:8080/getACByTimeRange`;
+        const itemType = this.queryEnvironData.item && this.queryEnvironData.item[0];
+
+        if (itemType === 'control_param') {
+          url = `http://127.0.0.1:8080/controlParam/sheet`;
           data = {
-            deviceName: this.queryEnvironData.item[1],
-            endTime: formatTime2(this.queryEnvironData.dateRange[1]),
             startTime: formatTime1(this.queryEnvironData.dateRange[0]),
+            endTime: formatTime2(this.queryEnvironData.dateRange[1]),
           };
-          console.log('空调报表参数', data);
-        } else if (this.queryEnvironData.item[0] == '0') {
-          url = `http://127.0.0.1:8080/getEleByTimeRange`;
+        } else if (itemType === 'sensor') {
+          url = `http://127.0.0.1:8080/sensor/sheet`;
           data = {
-            deviceName:'',
-            endTime: formatTime2(this.queryEnvironData.dateRange[1]),
             startTime: formatTime1(this.queryEnvironData.dateRange[0]),
+            endTime: formatTime2(this.queryEnvironData.dateRange[1]),
           };
-          console.log('电量报表参数', data);
+        } else if (itemType === 'device_status') {
+          url = `http://127.0.0.1:8080/deviceStatus/sheet`;
+          data = {
+            startTime: formatTime1(this.queryEnvironData.dateRange[0]),
+            endTime: formatTime2(this.queryEnvironData.dateRange[1]),
+          };
+        } else if (itemType === 'spray_record') {
+          url = `http://127.0.0.1:8080/sprayRecord/sheet`;
+          data = {
+            startTime: formatTime1(this.queryEnvironData.dateRange[0]),
+            endTime: formatTime2(this.queryEnvironData.dateRange[1]),
+          };
+        } else if (itemType === 'product_hourly') {
+          url = `http://127.0.0.1:8080/productHourly/sheet`;
+          data = {
+            startTime: formatTime1(this.queryEnvironData.dateRange[0]),
+            endTime: formatTime2(this.queryEnvironData.dateRange[1]),
+          };
+        } else if (itemType === 'product_daily') {
+          url = `http://127.0.0.1:8080/productDaily/sheet`;
+          data = {
+            startTime: formatTime1(this.queryEnvironData.dateRange[0]),
+            endTime: formatTime2(this.queryEnvironData.dateRange[1]),
+          };
+        } else if (itemType === 'quality_result') {
+          url = `http://127.0.0.1:8080/qualityResult/sheet`;
+          data = {
+            startTime: formatTime1(this.queryEnvironData.dateRange[0]),
+            endTime: formatTime2(this.queryEnvironData.dateRange[1]),
+          };
         }
-        else if (this.queryEnvironData.item[0] == '3') {
-          url = `http://127.0.0.1:8080/getXFByTimeRange`;
-          data = {
-            deviceName:this.queryEnvironData.item[1],
-            endTime: formatTime2(this.queryEnvironData.dateRange[1]),
-            startTime: formatTime1(this.queryEnvironData.dateRange[0]),
-          };
-          console.log('新风量报表参数', data);
-        }
 
-
-        if (data.startTime !== undefined && data.endTime !== undefined) {
+        if (data.startTime && data.endTime && url) {
           axios.post(url, data, {
             headers: {'Content-Type': 'application/json; charset=UTF-8'}
           }).then(response => {
-            console.log("数据对象", this.queryEnvironData);
-            console.log('历史报表参数', data);
-            this.tableEnvironDataHistory = response.data;
-            console.log('历史报表', response.data);
+            const responseData = response.data;
+            if (Array.isArray(responseData)) {
+              this.tableEnvironDataHistory = responseData;
+            } else if (responseData && Array.isArray(responseData.data)) {
+              this.tableEnvironDataHistory = responseData.data;
+            } else {
+              this.tableEnvironDataHistory = [];
+            }
             this.paginatedEnvironData();
           }).catch(error => {
-            // 请求失败，处理错误
             console.log("历史报表错误", error);
           });
         }
 
+      },
 
+      exportHistory() {
+        const range = this.queryEnvironData.dateRange;
+        if (!range || range.length !== 2 || !range[0] || !range[1]) {
+          return;
+        }
       },
 
 
@@ -5228,77 +5309,6 @@
       handleCurrentChangeEnviron(val) {
         this.queryEnvironData.currentPage = val;
         this.searchEnviron();
-      },
-
-      exportHistoryToXlsx() {
-        if (!this.tableEnvironDataHistory || this.tableEnvironDataHistory.length === 0) {
-          if (this.$message) {
-            this.$message.warning('当前没有可导出的数据');
-          }
-          return;
-        }
-
-        const type = this.queryEnvironData.item[0];
-        let sheetData = [];
-
-        if (type === '1') {
-          sheetData = this.tableEnvironDataHistory.map(row => ({
-            '时间': this.formatTimeHistoryShow(row),
-            '房间': this.formatRoomName(row),
-            '温度(℃)': this.formatTemperature(row),
-            '湿度(%)': this.formatHumidity(row),
-            'CO2(PPM)': row.co2,
-            'PM2.5(μg/m³)': row.pm25,
-            'PM10(μg/m³)': row.pm10,
-          }));
-        } else if (type === '0') {
-          sheetData = this.tableEnvironDataHistory.map(row => ({
-            '时间': this.formatTimeHistoryShow(row),
-            '总电量': row.allPower,
-            '照明': this.formatNA(row, { property: 'lightPower' }),
-            '空调': this.formatNA(row, { property: 'airconditionPower' }),
-            '新风': this.formatNA(row, { property: 'freshPower' }),
-          }));
-        } else if (type === '2') {
-          sheetData = this.tableEnvironDataHistory.map(row => ({
-            '时间': this.formatTimeHistoryShow(row),
-            '房间': this.formatACName(row),
-            '状态': this.formatStatus(row),
-            '温度(℃)': this.formatNA(row, { property: 'temperature' }),
-            '风速': this.formatWindspeed(row),
-            '模式': this.formatMode(row),
-          }));
-        } else if (type === '3') {
-          sheetData = this.tableEnvironDataHistory.map(row => ({
-            '时间': this.formatTimeHistoryShow(row),
-            '房间': this.formatXFName(row),
-            '状态': this.formatStatus(row),
-            '风速': this.formatWindspeed(row),
-          }));
-        }
-
-        const worksheet = XLSX.utils.json_to_sheet(sheetData);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, '数据报表');
-        const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-        const blob = new Blob([wbout], { type: 'application/octet-stream' });
-
-        const typeTextMap = {
-          '0': '电量数据',
-          '1': '环境数据',
-          '2': '空调数据',
-          '3': '新风数据',
-        };
-
-        const now = new Date();
-        const datePart = [
-          now.getFullYear(),
-          String(now.getMonth() + 1).padStart(2, '0'),
-          String(now.getDate()).padStart(2, '0'),
-        ].join('');
-
-        const filename = `历史${typeTextMap[type] || '数据'}_${datePart}.xlsx`;
-        FileSaver.saveAs(blob, filename);
       },
     },
   }
@@ -6255,6 +6265,11 @@
     border-radius: 0px;
     text-align: center;
     font-size: 0.85vw;
+  }
+
+  .objectselect /deep/ .el-cascader-panel {
+    max-height: 10vh;
+    overflow: auto;
   }
 
   .select_dianPart /deep/ .el-input__inner {
