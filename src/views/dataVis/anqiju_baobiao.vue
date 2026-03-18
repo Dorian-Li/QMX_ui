@@ -12,13 +12,14 @@
           <el-col :span="8">
             <div class="grid-content-title">阳极炭块喷涂监控平台</div>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
             <div class="grid-content-time">{{ nowTime }}</div>
           </el-col>
-          <el-col :span="2">
+          <el-col :span="3">
             <div class="grid-content-user">
               <i class="el-icon-s-custom user-icon" @click="openConfigDialog"></i>
               <i class="el-icon-document report-icon" @click="openHistoryDialog"></i>
+              <i class="el-icon-upload2 upgrade-icon" @click="openUpgradeDialog"></i>
             </div>
           </el-col>
         </el-row>
@@ -228,9 +229,7 @@
                       </div>
                       <div style="color: #75d5ff; margin-top: 10px; font-size: 20px;">锁定机构2</div>
                       <div style="margin-bottom: 8px" />
-                      <div :style="{ color: lockStatuses.lock2 === 'normal' ? 'white' : '#F56C6C', fontSize: '18px' }">
-                        {{ lockStatusText('lock2') }}
-                      </div>
+                      <div style="color: white; font-size: 18px;"> {{ lockStatusText('lock2') }}</div>
                     </div>
                   </el-col>
                 </el-row>
@@ -318,7 +317,7 @@
                       <div class="indicator-icon" :class="sprayPressureStatuses.spray1">
                         <i class="el-icon-brush"></i>
                       </div>
-                      <div style="color: #75d5ff; margin-top: 10px; font-size: 20px;">喷涂机1</div>
+                      <div style="color: #75d5ff; margin-top: 10px; font-size: 20px;">喷涂管路1压力</div>
                       <div style="margin-bottom: 8px"/>
                       <div style="color: white; font-size: 18px;">{{ sprayPressureTexts.spray1 }}</div>
                     </div>
@@ -329,7 +328,7 @@
                       <div class="indicator-icon" :class="sprayPressureStatuses.spray2">
                         <i class="el-icon-brush"></i>
                       </div>
-                      <div style="color: #75d5ff; margin-top: 10px; font-size: 20px;">喷涂机2</div>
+                      <div style="color: #75d5ff; margin-top: 10px; font-size: 20px;">喷涂管路2压力</div>
                       <div style="margin-bottom: 8px"/>
                       <div style="color: white; font-size: 18px;">{{ sprayPressureTexts.spray2 }}</div>
                     </div>
@@ -340,7 +339,7 @@
                       <div class="indicator-icon" :class="sprayPressureStatuses.pipe1">
                         <i class="el-icon-odometer"></i>
                       </div>
-                      <div style="color: #75d5ff; margin-top: 10px; font-size: 20px;">喷涂管路1</div>
+                      <div style="color: #75d5ff; margin-top: 10px; font-size: 20px;">清洗泵压力</div>
                       <div style="margin-bottom: 8px"/>
                       <div style="color: white; font-size: 18px;">{{ sprayPressureTexts.pipe1 }}</div>
                     </div>
@@ -351,7 +350,7 @@
                       <div class="indicator-icon" :class="sprayPressureStatuses.pipe2">
                         <i class="el-icon-odometer"></i>
                       </div>
-                      <div style="color: #75d5ff; margin-top: 10px; font-size: 20px;">喷涂管路2</div>
+                      <div style="color: #75d5ff; margin-top: 10px; font-size: 20px;">进气源压力</div>
                       <div style="margin-bottom: 8px"/>
                       <div style="color: white; font-size: 18px;">{{ sprayPressureTexts.pipe2 }}</div>
                     </div>
@@ -443,7 +442,7 @@
                       </div>
                       <div class="tank-main">
                         <div class="tank-value">
-                          <div class="tank-value-number">{{ tank.level }}</div>
+                          <div class="tank-value-number">{{ Math.floor(tank.level) }}</div>
                         </div>
                         <div class="tank-bar-wrapper">
                           <div class="tank-bar-bg">
@@ -530,7 +529,7 @@
           width="40vw"
           append-to-body>
           <el-form :model="configForm" label-width="14vw" class="config-form">
-            <el-form-item label="涂料泵及管路一键清洗模式">
+            <el-form-item label="人工一键清洗">
               <el-select v-model="configForm.mode01" placeholder="请选择">
                 <el-option label="0-关" :value="0"></el-option>
                 <el-option label="1-开" :value="1"></el-option>
@@ -538,18 +537,6 @@
             </el-form-item>
             <el-form-item label="枪头清洗控制">
               <el-select v-model="configForm.mode02" placeholder="请选择">
-                <el-option label="0-关" :value="0"></el-option>
-                <el-option label="1-开" :value="1"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="搅拌器1控制">
-              <el-select v-model="configForm.mode03" placeholder="请选择">
-                <el-option label="0-关" :value="0"></el-option>
-                <el-option label="1-开" :value="1"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="搅拌器2控制">
-              <el-select v-model="configForm.mode04" placeholder="请选择">
                 <el-option label="0-关" :value="0"></el-option>
                 <el-option label="1-开" :value="1"></el-option>
               </el-select>
@@ -565,15 +552,14 @@
                 <el-option label="1-启动" :value="1"></el-option>
                 <el-option label="2-暂停" :value="2"></el-option>
                 <el-option label="3-急停" :value="3"></el-option>
-<!--                <el-option label="4-离开" :value="4"></el-option>-->
               </el-select>
             </el-form-item>
-            <el-form-item label="枪头清洗模式">
-              <el-select v-model="configForm.mode08" placeholder="请选择">
-                <el-option label="0-手动" :value="0"></el-option>
-                <el-option label="2-定时" :value="2"></el-option>
-              </el-select>
-            </el-form-item>
+<!--            <el-form-item label="枪头清洗模式">-->
+<!--              <el-select v-model="configForm.mode08" placeholder="请选择">-->
+<!--                <el-option label="0-手动" :value="0"></el-option>-->
+<!--                <el-option label="2-定时" :value="2"></el-option>-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
             <el-form-item label="机器人喷涂速度">
               <el-input-number
                 v-model="configForm.speed07"
@@ -611,6 +597,15 @@
                 style="width: 12vw"
               ></el-input-number>
             </el-form-item>
+            <el-form-item label="清洗泵压力报警阈值">
+              <el-input-number
+                v-model="configForm.cleanPumpPressure"
+                :min="0"
+                :step="0.01"
+                :precision="2"
+                style="width: 12vw"
+              ></el-input-number>
+            </el-form-item>
             <el-form-item label="搅拌器1转速">
               <el-input-number
                 v-model="configForm.freq12"
@@ -629,10 +624,50 @@
                 style="width: 12vw"
               ></el-input-number>
             </el-form-item>
+            <el-form-item label="液位传感器1报警阈值">
+              <el-input-number
+                v-model="configForm.levelSensor1Alarm"
+                :min="0"
+                :step="0.01"
+                :precision="2"
+                style="width: 12vw"
+              ></el-input-number>
+            </el-form-item>
+            <el-form-item label="液位传感器2报警阈值">
+              <el-input-number
+                v-model="configForm.levelSensor2Alarm"
+                :min="0"
+                :step="0.01"
+                :precision="2"
+                style="width: 12vw"
+              ></el-input-number>
+            </el-form-item>
           </el-form>
           <span slot="footer" class="dialog-footer">
             <el-button @click="configDialogVisible = false">取消</el-button>
             <el-button type="primary" @click="submitConfig">发送</el-button>
+          </span>
+        </el-dialog>
+
+        <el-dialog
+          title="远程升级"
+          :visible.sync="upgradeDialogVisible"
+          width="30vw"
+          append-to-body>
+          <el-form :model="upgradeForm" label-width="8vw" class="config-form">
+            <el-form-item label="文件名">
+              <el-input v-model="upgradeForm.fileName" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="IP地址">
+              <el-input v-model="upgradeForm.ipAddress" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="端口">
+              <el-input v-model.number="upgradeForm.port" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-form>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="upgradeDialogVisible = false">取消</el-button>
+            <el-button type="primary" :loading="upgradeLoading" @click="submitUpgrade">升级</el-button>
           </span>
         </el-dialog>
 
@@ -705,7 +740,7 @@
                 </template>
                 <template v-if="queryEnvironData.item[0] === 'device_status'">
                   <el-table-column prop="time" label="时间" :formatter="formatTimeHistoryShow"></el-table-column>
-                  <el-table-column prop="deviceName" label="设备名称"></el-table-column>
+                  <el-table-column prop="devName" label="设备名称"></el-table-column>
                   <el-table-column prop="status" label="状态"></el-table-column>
                   <!-- <el-table-column prop="alarmLevel" label="告警级别"></el-table-column>
                   <el-table-column prop="alarmInfo" label="告警信息"></el-table-column> -->
@@ -713,7 +748,7 @@
                 <template v-else-if="queryEnvironData.item[0] === 'sensor'">
                   <el-table-column prop="time" label="时间" :formatter="formatTimeHistoryShow"></el-table-column>
                   <el-table-column prop="devName" label="设备名" :formatter="formatRoomName"></el-table-column>
-                  <el-table-column prop="value" label="参数值" :formatter="formatTemperature"></el-table-column>
+                  <el-table-column prop="value" label="参数值" :formatter="formatSensorValue"></el-table-column>
                   <!-- <el-table-column prop="humidity" label="湿度(%)" :formatter="formatHumidity"></el-table-column>
                   <el-table-column prop="co2" label="CO2(PPM)"></el-table-column>
                   <el-table-column prop="pm25" label="PM2.5(μg/m³)"></el-table-column>
@@ -729,13 +764,11 @@
                 </template> -->
                 <template v-else-if="queryEnvironData.item[0] === 'product_hourly'">
                   <el-table-column prop="time" label="时间" :formatter="formatTimeHistoryShow"></el-table-column>
-                  <!-- <el-table-column prop="productLine" label="产线"></el-table-column> -->
-                  <el-table-column prop="quantity" label="产量(块/小时)"></el-table-column>
+                  <el-table-column prop="numHourly" label="产量(块/小时)"></el-table-column>
                 </template>
                 <template v-else-if="queryEnvironData.item[0] === 'product_daily'">
                   <el-table-column prop="time" label="时间" :formatter="formatTimeHistoryShow"></el-table-column>
-                  <!-- <el-table-column prop="productLine" label="产线"></el-table-column> -->
-                  <el-table-column prop="quantity" label="产量(块/天)"></el-table-column>
+                  <el-table-column prop="numDaily" label="产量(块/天)"></el-table-column>
                 </template>
                 <template v-else-if="queryEnvironData.item[0] === 'quality_result'">
                   <el-table-column prop="time" label="时间" :formatter="formatTimeHistoryShow"></el-table-column>
@@ -747,16 +780,16 @@
               </el-table>
             </div>
             <div style="display: flex; justify-content: right; margin-top: 2vh;">
-              <el-pagination
-                background
-                @size-change="handleSizeChangeEnviron"
-                @current-change="handleCurrentChangeEnviron"
-                :current-page="queryEnvironData.currentPage"
-                :page-sizes="[15, 30, 45, 60]"
-                :page-size="queryEnvironData.pageSize"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="tableEnvironDataHistory.length">
-              </el-pagination>
+                  <el-pagination
+                    background
+                    @size-change="handleSizeChangeEnviron"
+                    @current-change="handleCurrentChangeEnviron"
+                    :current-page="queryEnvironData.currentPage"
+                    :page-sizes="[15, 30, 45, 60]"
+                    :page-size="queryEnvironData.pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="totalRowsEnviron">
+                  </el-pagination>
             </div>
           </el-card>
         </el-dialog>
@@ -771,6 +804,8 @@
   import * as echarts from 'echarts';
   import axios from "axios";
   import request from '../../utils/request';
+  import * as XLSX from "xlsx";
+  import { saveAs } from "file-saver";
 
   export default {
     name: "dataView_anqiju",
@@ -782,19 +817,29 @@
           { name: '进料门', value: '开启', status: 'normal', icon: 'el-icon-download' },
           { name: '出料门', value: '关闭', status: 'normal', icon: 'el-icon-upload2' }
         ],
+        upgradeDialogVisible: false,
+        upgradeLoading: false,
+        upgradeForm: {
+          fileName: '',
+          ipAddress: '',
+          port: null
+        },
         configAuthDialogVisible: false,
         configAuthLoading: false,
         configAuthPassed: false,
+        // 权限校验超时时间
+        configAuthExpireMinutes: 5,
+        configAuthExpireAt: null,
+        configAuthExpireTimer: null,
         configAuthForm: {
           username: '',
           password: ''
         },
         configDialogVisible: false,
+        alarmNotifications: [],
         configForm: {
           mode01: null,
           mode02: null,
-          mode03: null,
-          mode04: null,
           mode05: null,
           mode06: null,
           speed07: null,
@@ -803,7 +848,10 @@
           pressure10: null,
           pressure11: null,
           freq12: null,
-          freq13: null
+          freq13: null,
+          cleanPumpPressure: null,
+          levelSensor1Alarm: null,
+          levelSensor2Alarm: null
         },
         originalConfigForm: null,
         materialTanks: [
@@ -1110,20 +1158,20 @@
                 label: '喷枪2',
               },
               {
-                value: '喷涂机1',
-                label: '喷涂机1',
+                value: '清洗泵压力',
+                label: '清洗泵压力',
               },
               {
-                value: '喷涂机2',
-                label: '喷涂机2',
+                value: '进气源压力',
+                label: '进气源压力',
               },
               {
-                value: '喷涂管路1',
-                label: '喷涂管路1',
+                value: '喷涂管路1压力',
+                label: '喷涂管路1压力',
               },
               {
-                value: '喷涂管路2',
-                label: '喷涂管路2',
+                value: '喷涂管路2压力',
+                label: '喷涂管路2压力',
               },
               {
                 value: '搅拌器1',
@@ -1156,24 +1204,24 @@
                 label: '涂料桶2',
               },
               {
-                value: '喷涂管路1',
-                label: '喷涂管路1',
+                value: '喷涂管路1压力',
+                label: '喷涂管路1压力',
               },
               {
                 value: '喷涂管路2',
                 label: '喷涂管路2',
               },
               {
-                value: '喷涂机1',
-                label: '喷涂机1',
+                value: '清洗泵压力',
+                label: '清洗泵压力',
               },
               {
-                value: '喷涂机2',
-                label: '喷涂机2',
+                value: '进气源压力',
+                label: '进气源压力',
               },
               {
-                value: '上料管路',
-                label: '上料管路',
+                value: '上料管路压力',
+                label: '上料管路压力',
               },
             ],
           },
@@ -1221,7 +1269,7 @@
         this.fetchMixerStatus();
         this.fetchRobotAndGunStatus();
         this.fetchGunPressureHistory();
-      }, 5000);
+      }, 500);
 
 
 
@@ -1400,6 +1448,105 @@
         this.alarmEventSource = es;
       },
 
+      applyAlarmToDevice(deviceName) {
+        let name = deviceName ? String(deviceName).trim() : '';
+        if (!name) return;
+
+        const aliasMap = {
+          '机器人1地轨': '机器人1',
+          '机器人2地轨': '机器人2',
+          '搅拌器1故障': '搅拌器1',
+          '搅拌器2故障': '搅拌器2',
+          '涂料桶1进气压力': '涂料桶1',
+          '涂料桶2进气压力': '涂料桶2',
+          '涂料桶1是否可用': '涂料桶1',
+          '涂料桶2是否可用': '涂料桶2'
+        };
+        if (aliasMap[name]) {
+          name = aliasMap[name];
+        }
+
+        const lockMap = {
+          '停止器1': 'stopper1',
+          '停止器2': 'stopper2',
+          '锁定机构1': 'lock1',
+          '锁定机构2': 'lock2'
+        };
+        if (lockMap[name]) {
+          const key = lockMap[name];
+          this.$set(this.lockStatuses, key, 'error');
+          this.$set(this.lockStatusTexts, key, '报警');
+        }
+
+        const sprayMap = {
+          '喷枪1': 'spray1',
+          '喷枪2': 'spray2',
+          '喷涂管路1': 'pipe1',
+          '喷涂管路2': 'pipe2'
+        };
+        if (sprayMap[name]) {
+          const key = sprayMap[name];
+          this.$set(this.sprayPressureStatuses, key, 'error');
+          this.$set(this.sprayPressureTexts, key, '报警');
+        }
+
+        if (name === '涂料桶1' || name === '涂料桶2') {
+          const updatedTanks = this.materialTanks.map(tank => {
+            if (tank.name === name) {
+              return Object.assign({}, tank, {
+                status: 'error',
+                statusText: '报警'
+              });
+            }
+            return tank;
+          });
+          this.materialTanks = updatedTanks;
+        }
+
+        const roomNames = ['搅拌器1', '搅拌器2', '进料门', '出料门'];
+        if (roomNames.includes(name)) {
+          const updatedSystems = this.roomSystems.map(system => {
+            if (system.name === name) {
+              return Object.assign({}, system, {
+                status: 'error',
+                value: '报警'
+              });
+            }
+            return system;
+          });
+          this.roomSystems = updatedSystems;
+        }
+
+        const robotMap = {
+          '机器人1': 'robot1',
+          '机器人2': 'robot2'
+        };
+        if (robotMap[name]) {
+          const key = robotMap[name];
+          this.$set(this.robotStatusTexts, key, '报警');
+        }
+
+        const gunMap = {
+          '喷枪1': 'gun1',
+          '喷枪2': 'gun2'
+        };
+        if (gunMap[name]) {
+          const key = gunMap[name];
+          this.$set(this.gunStatusTexts, key, '报警');
+        }
+      },
+
+      clearAlarmNotifications() {
+        if (Array.isArray(this.alarmNotifications) && this.alarmNotifications.length) {
+          this.alarmNotifications.forEach(n => {
+            if (n && typeof n.close === 'function') {
+              n.close();
+            }
+          });
+          this.alarmNotifications = [];
+        }
+      },
+
       handleAlarmMessage(payload) {
         if (!payload) {
           return;
@@ -1411,8 +1558,10 @@
         const hasIndexOrUnit = (index !== undefined && index !== null) || (unitId !== undefined && unitId !== null);
         if (!hasDeviceName && !hasIndexOrUnit) {
           console.log('收到非报警SSE消息，忽略', payload);
+          this.clearAlarmNotifications();
           return;
         }
+        this.applyAlarmToDevice(device);
         const timestampRaw = payload.timestamp;
         let timestampText = '';
         if (timestampRaw !== undefined && timestampRaw !== null) {
@@ -1450,7 +1599,7 @@
         }
         const message = lines.join('<br/>');
         if (this.$notify) {
-          this.$notify({
+          const n = this.$notify({
             title: '设备报警',
             message,
             type: 'error',
@@ -1458,6 +1607,10 @@
             duration: 0,
             position: 'top-right'
           });
+          if (!Array.isArray(this.alarmNotifications)) {
+            this.alarmNotifications = [];
+          }
+          this.alarmNotifications.push(n);
         } else if (this.$message) {
           this.$message.error(lines.join('，'));
         } else {
@@ -1466,9 +1619,15 @@
       },
 
       async openConfigDialog() {
-        if (this.configAuthPassed) {
+        if (this.configAuthPassed && this.configAuthExpireAt && Date.now() < this.configAuthExpireAt) {
           await this.openConfigDialogInner();
           return;
+        }
+        this.configAuthPassed = false;
+        this.configAuthExpireAt = null;
+        if (this.configAuthExpireTimer) {
+          clearTimeout(this.configAuthExpireTimer);
+          this.configAuthExpireTimer = null;
         }
         this.configAuthForm.username = '';
         this.configAuthForm.password = '';
@@ -1478,6 +1637,50 @@
       async openConfigDialogInner() {
         this.configDialogVisible = true;
         await this.loadConfig();
+      },
+
+      openUpgradeDialog() {
+        this.upgradeForm.fileName = '';
+        this.upgradeForm.ipAddress = '';
+        this.upgradeForm.port = null;
+        this.upgradeDialogVisible = true;
+      },
+
+      async submitUpgrade() {
+        if (!this.upgradeForm.fileName || !this.upgradeForm.ipAddress || !this.upgradeForm.port) {
+          if (this.$message) {
+            this.$message.error('请输入文件名、IP地址和端口');
+          }
+          return;
+        }
+        this.upgradeLoading = true;
+        try {
+          await axios.post('http://localhost:8080/upgrade', {
+            fileName: this.upgradeForm.fileName,
+            ipAddress: this.upgradeForm.ipAddress,
+            port: this.upgradeForm.port
+          }, {
+            headers: {
+              'Content-Type': 'application/json; charset=UTF-8'
+            },
+            timeout: 30000
+          });
+          if (this.$message) {
+            this.$message({
+              message: '升级指令已发送',
+              type: 'success',
+              duration: 2000
+            });
+          }
+          this.upgradeDialogVisible = false;
+        } catch (e) {
+          console.error('远程升级失败', e);
+          if (this.$message) {
+            this.$message.error('远程升级失败');
+          }
+        } finally {
+          this.upgradeLoading = false;
+        }
       },
 
       async submitConfigAuth() {
@@ -1502,6 +1705,17 @@
             return;
           }
           this.configAuthPassed = true;
+          if (this.configAuthExpireTimer) {
+            clearTimeout(this.configAuthExpireTimer);
+            this.configAuthExpireTimer = null;
+          }
+          const ttlMs = Math.max(1, Number(this.configAuthExpireMinutes)) * 60 * 1000;
+          this.configAuthExpireAt = Date.now() + ttlMs;
+          this.configAuthExpireTimer = setTimeout(() => {
+            this.configAuthPassed = false;
+            this.configAuthExpireAt = null;
+            this.configAuthExpireTimer = null;
+          }, ttlMs);
           this.configAuthDialogVisible = false;
           await this.openConfigDialogInner();
         } catch (e) {
@@ -1527,26 +1741,28 @@
             return;
           }
           const cfg = body.data || body;
-          const keys = [
-            'mode01',
-            'mode02',
-            'mode03',
-            'mode04',
-            'mode05',
-            'mode06',
-            'speed07',
-            'mode08',
-            'time09',
-            'pressure10',
-            'pressure11',
-            'freq12',
-            'freq13'
-          ];
+          const mapping = {
+            '人工一键清洗': 'mode01',
+            '枪头清洗控制': 'mode02',
+            '供料桶切换': 'mode05',
+            '现场运行控制': 'mode06',
+            '机器人喷涂速度': 'speed07',
+            // '枪头清洗模式': 'mode08',
+            '定时清洗间隔': 'time09',
+            '喷涂管路1压力报警阈值': 'pressure10',
+            '喷涂管路2压力报警阈值': 'pressure11',
+            '清洗泵压力报警阈值': 'cleanPumpPressure',
+            '搅拌器1转速': 'freq12',
+            '搅拌器2转速': 'freq13',
+            '液位传感器1报警阈值': 'levelSensor1Alarm',
+            '液位传感器2报警阈值': 'levelSensor2Alarm'
+          };
           const snap = {};
-          keys.forEach(k => {
-            if (Object.prototype.hasOwnProperty.call(cfg, k) && cfg[k] !== undefined && cfg[k] !== null) {
-              this.configForm[k] = cfg[k];
-              snap[k] = cfg[k];
+          Object.keys(mapping).forEach(serverKey => {
+            if (Object.prototype.hasOwnProperty.call(cfg, serverKey) && cfg[serverKey] !== undefined && cfg[serverKey] !== null) {
+              const field = mapping[serverKey];
+              this.configForm[field] = cfg[serverKey];
+              snap[field] = cfg[serverKey];
             }
           });
           this.originalConfigForm = snap;
@@ -1571,7 +1787,7 @@
         const c = String(code);
         if (type === 'stopper') {
           if (c === '0') return { text: '复位', cls: 'normal' };
-          if (c === '1') return { text: '启动', cls: 'normal' };
+          if (c === '1') return { text: '启用', cls: 'normal' };
           return { text: '异常', cls: 'error' };
         }
         const map = {
@@ -1689,7 +1905,35 @@
         return { text: '关闭', status: 'warning' };
       },
 
+      validateConfigRange() {
+        const f = this.configForm || {};
+        const checkNum = (val, min, max) => {
+          if (val === null || val === undefined || val === '') return false;
+          const num = Number(val);
+          if (Number.isNaN(num)) return true;
+          if (min !== undefined && num < min) return true;
+          if (max !== undefined && num > max) return true;
+          return false;
+        };
+        if (checkNum(f.speed07, 0, 100)) return true;
+        if (checkNum(f.time09, 0, 1000)) return true;
+        if (checkNum(f.pressure10, 0, 10)) return true;
+        if (checkNum(f.pressure11, 0, 10)) return true;
+        if (checkNum(f.freq12, 0, 100)) return true;
+        if (checkNum(f.freq13, 0, 100)) return true;
+        if (checkNum(f.cleanPumpPressure, 0, 10)) return true;
+        if (checkNum(f.levelSensor1Alarm, 0, 100)) return true;
+        if (checkNum(f.levelSensor2Alarm, 0, 100)) return true;
+        return false;
+      },
+
       async submitConfig() {
+        if (this.validateConfigRange()) {
+          if (this.$message && typeof this.$message.error === 'function') {
+            this.$message.error('参数设置超出范围，请重新设置！');
+          }
+          return;
+        }
         const params = [];
         const pushParam = (dataId, key, value) => {
           if (value === null || value === undefined || value === '') return;
@@ -1702,19 +1946,20 @@
             value
           });
         };
-        pushParam(0x01, 'mode01', this.configForm.mode01);
-        pushParam(0x02, 'mode02', this.configForm.mode02);
-        pushParam(0x03, 'mode03', this.configForm.mode03);
-        pushParam(0x04, 'mode04', this.configForm.mode04);
-        pushParam(0x05, 'mode05', this.configForm.mode05);
-        pushParam(0x06, 'mode06', this.configForm.mode06);
-        pushParam(0x07, 'speed07', this.configForm.speed07);
-        pushParam(0x08, 'mode08', this.configForm.mode08);
-        pushParam(0x09, 'time09', this.configForm.time09);
-        pushParam(0x0A, 'pressure10', this.configForm.pressure10);
-        pushParam(0x0B, 'pressure11', this.configForm.pressure11);
-        pushParam(0x0C, 'freq12', this.configForm.freq12);
-        pushParam(0x0D, 'freq13', this.configForm.freq13);
+        pushParam(0x01, '人工一键清洗', this.configForm.mode01);
+        pushParam(0x02, '枪头清洗控制', this.configForm.mode02);
+        pushParam(0x03, '供料桶切换', this.configForm.mode05);
+        pushParam(0x04, '现场运行控制', this.configForm.mode06);
+        pushParam(0x05, '机器人喷涂速度', this.configForm.speed07);
+        // pushParam(0x06, '枪头清洗模式', this.configForm.mode08);
+        pushParam(0x06, '定时清洗间隔', this.configForm.time09);
+        pushParam(0x07, '喷涂管路1压力报警阈值', this.configForm.pressure10);
+        pushParam(0x08, '喷涂管路2压力报警阈值', this.configForm.pressure11);
+        pushParam(0x09, '清洗泵压力报警阈值', this.configForm.cleanPumpPressure);
+        pushParam(0x0A, '搅拌器1转速', this.configForm.freq12);
+        pushParam(0x0B, '搅拌器2转速', this.configForm.freq13);
+        pushParam(0x0C, '液位传感器1报警阈值', this.configForm.levelSensor1Alarm);
+        pushParam(0x0D, '液位传感器2报警阈值', this.configForm.levelSensor2Alarm);
         if (!params.length) {
           this.configDialogVisible = false;
           return;
@@ -1745,12 +1990,7 @@
       },
 
       async fetchMaterialTanks() {
-        const names = ['涂料桶1', '涂料桶2'];
-        const capacities = {
-          '涂料桶1': 1000,
-          '涂料桶2': 300
-        };
-
+        const names = ['涂料桶1液位', '涂料桶2液位'];
         try {
           const params = new URLSearchParams();
           names.forEach(name => params.append('devNames', name));
@@ -1769,26 +2009,22 @@
           const updated = names.map((name) => {
             const sensor = map[name];
             const rawVal = sensor && sensor.value;
-            let level = 0;
+            let percent = 0;
             if (typeof rawVal === 'number') {
-              level = rawVal;
+              percent = rawVal;
             } else if (rawVal != null && !isNaN(parseFloat(rawVal))) {
-              level = parseFloat(rawVal);
+              percent = parseFloat(rawVal);
             }
-            if (level < 0) level = 0;
+            if (percent < 0) percent = 0;
+            if (percent > 100) percent = 100;
 
-            const capacity = capacities[name] || 100;
-            let levelPercent = 0;
-            if (capacity > 0) {
-              levelPercent = (level / capacity) * 100;
-            }
-            if (levelPercent > 100) levelPercent = 100;
-
-            const lowThreshold = capacity * 0.2;
+            const level = percent;
+            const levelPercent = percent;
+            const lowThreshold = 20;
 
             let status = 'normal';
             let statusText = '正常';
-            if (level <= lowThreshold) {
+            if (levelPercent <= lowThreshold) {
               status = 'error';
               statusText = '低液位';
             }
@@ -1855,7 +2091,7 @@
       },
 
       async fetchSprayPressureStatus() {
-        const names = ['喷涂机1', '喷涂机2', '喷涂管路1', '喷涂管路2'];
+        const names = [ '喷涂管路1压力', '喷涂管路2压力', '清洗泵压力', '进气源压力'];
         const keys = ['spray1', 'spray2', 'pipe1', 'pipe2'];
 
         try {
@@ -2226,7 +2462,7 @@
           legend: {
             data: ['喷枪1', '喷枪2'],
             right: '5%',        // 距离左边 2%
-            top: '5%',     
+            top: '5%',
             orient: 'horizontal',// 横向排列
             textStyle: {
               color: '#75d5ff',
@@ -5093,7 +5329,7 @@
           const year = date.getFullYear();
           const month = (date.getMonth() + 1).toString().padStart(2, '0');
           const day = date.getDate().toString().padStart(2, '0');
-          return `${year}-${month}-${day} 00:00:00`;
+          return `${year}-${month}-${day}T00:00:00`;
         }
 
         function formatTime2(dateStr) {
@@ -5101,76 +5337,109 @@
           const year = date.getFullYear();
           const month = (date.getMonth() + 1).toString().padStart(2, '0');
           const day = date.getDate().toString().padStart(2, '0');
-          return `${year}-${month}-${day} 23:59:59`;
+          return `${year}-${month}-${day}T23:59:59`;
         }
-
-        let url = "";
-        let data = {};
 
         const itemType = this.queryEnvironData.item && this.queryEnvironData.item[0];
+        if (!itemType) {
+          return;
+        }
+        const second = this.queryEnvironData.item && this.queryEnvironData.item[1];
 
+        const baseUrl = 'http://127.0.0.1:8080';
+        const pageReq = {
+          current: this.queryEnvironData.currentPage,
+          pageSize: this.queryEnvironData.pageSize,
+          startTime: formatTime1(this.queryEnvironData.dateRange[0]),
+          endTime: formatTime2(this.queryEnvironData.dateRange[1]),
+        };
+
+        let url = '';
+        let payload = pageReq;
         if (itemType === 'control_param') {
-          url = `http://127.0.0.1:8080/controlParam/sheet`;
-          data = {
-            startTime: formatTime1(this.queryEnvironData.dateRange[0]),
-            endTime: formatTime2(this.queryEnvironData.dateRange[1]),
-          };
+          url = `${baseUrl}/controlParameter/page`;
         } else if (itemType === 'sensor') {
-          url = `http://127.0.0.1:8080/sensor/sheet`;
-          data = {
-            startTime: formatTime1(this.queryEnvironData.dateRange[0]),
-            endTime: formatTime2(this.queryEnvironData.dateRange[1]),
-          };
-        } else if (itemType === 'device_status') {
-          url = `http://127.0.0.1:8080/deviceStatus/sheet`;
-          data = {
-            startTime: formatTime1(this.queryEnvironData.dateRange[0]),
-            endTime: formatTime2(this.queryEnvironData.dateRange[1]),
-          };
-        } else if (itemType === 'spray_record') {
-          url = `http://127.0.0.1:8080/sprayRecord/sheet`;
-          data = {
-            startTime: formatTime1(this.queryEnvironData.dateRange[0]),
-            endTime: formatTime2(this.queryEnvironData.dateRange[1]),
-          };
-        } else if (itemType === 'product_hourly') {
-          url = `http://127.0.0.1:8080/productHourly/sheet`;
-          data = {
-            startTime: formatTime1(this.queryEnvironData.dateRange[0]),
-            endTime: formatTime2(this.queryEnvironData.dateRange[1]),
-          };
-        } else if (itemType === 'product_daily') {
-          url = `http://127.0.0.1:8080/productDaily/sheet`;
-          data = {
-            startTime: formatTime1(this.queryEnvironData.dateRange[0]),
-            endTime: formatTime2(this.queryEnvironData.dateRange[1]),
-          };
-        } else if (itemType === 'quality_result') {
-          url = `http://127.0.0.1:8080/qualityResult/sheet`;
-          data = {
-            startTime: formatTime1(this.queryEnvironData.dateRange[0]),
-            endTime: formatTime2(this.queryEnvironData.dateRange[1]),
-          };
-        }
-
-        if (data.startTime && data.endTime && url) {
-          axios.post(url, data, {
-            headers: {'Content-Type': 'application/json; charset=UTF-8'}
-          }).then(response => {
-            const responseData = response.data;
-            if (Array.isArray(responseData)) {
-              this.tableEnvironDataHistory = responseData;
-            } else if (responseData && Array.isArray(responseData.data)) {
-              this.tableEnvironDataHistory = responseData.data;
-            } else {
-              this.tableEnvironDataHistory = [];
-            }
-            this.paginatedEnvironData();
-          }).catch(error => {
-            console.log("历史报表错误", error);
+          url = `${baseUrl}/sensor/page`;
+          payload = Object.assign({}, pageReq, {
+            names: second ? [second] : [],
           });
+        } else if (itemType === 'device_status') {
+          url = `${baseUrl}/deviceStatus/page`;
+          payload = Object.assign({}, pageReq, {
+            names: second ? [second] : [],
+          });
+        } else if (itemType === 'spray_record') {
+          url = `${baseUrl}/sprayRecord/page`;
+        } else if (itemType === 'product_hourly') {
+          url = `${baseUrl}/productHourly/page`;
+        } else if (itemType === 'product_daily') {
+          url = `${baseUrl}/productDaily/page`;
+        } else if (itemType === 'quality_result') {
+          url = `${baseUrl}/qualityDetection/page`;
         }
 
+        if (!url) {
+          return;
+        }
+
+        axios.post(url, payload, {
+          headers: {'Content-Type': 'application/json; charset=UTF-8'}
+        }).then(response => {
+          const res = response.data;
+          let rows = [];
+          let total = 0;
+
+          console.log('历史报表响应', res);
+
+          if (res) {
+            // 1) 外层 data 是数组：{ data:[...], total:xxx }
+            if (Array.isArray(res.data)) {
+              rows = res.data;
+              total = res.total || res.totalCount || res.totalRows || res.dataTotal || rows.length;
+            }
+            // 2) 外层 records/rows 是数组：{ records:[...], total:xxx }
+            else if (Array.isArray(res.records)) {
+              rows = res.records;
+              total = res.total || res.totalCount || res.totalRows || res.dataTotal || rows.length;
+            } else if (Array.isArray(res.rows)) {
+              rows = res.rows;
+              total = res.total || res.totalCount || res.totalRows || res.dataTotal || rows.length;
+            }
+            // 3) 内层 data 是分页对象：{ code:0, data:{ records:[...], total:xxx } }
+            else if (res.data && typeof res.data === 'object') {
+              const inner = res.data;
+              if (Array.isArray(inner.records)) {
+                rows = inner.records;
+                total = inner.total || inner.totalCount || inner.totalRows || inner.dataTotal || rows.length;
+              } else if (Array.isArray(inner.rows)) {
+                rows = inner.rows;
+                total = inner.total || inner.totalCount || inner.totalRows || inner.dataTotal || rows.length;
+              } else if (Array.isArray(inner.list)) {
+                rows = inner.list;
+                total = inner.total || inner.totalCount || inner.totalRows || inner.dataTotal || rows.length;
+              }
+            }
+            // 4) 直接数组
+            else if (Array.isArray(res)) {
+              rows = res;
+              total = rows.length;
+            }
+          }
+
+          if (Array.isArray(rows) && rows.length > 0) {
+            rows.sort((a, b) => {
+              const ta = a && a.time ? new Date(a.time).getTime() : 0;
+              const tb = b && b.time ? new Date(b.time).getTime() : 0;
+              return ta - tb;
+            });
+          }
+
+          this.tableEnvironDataHistory = rows;
+          this.totalRowsEnviron = total;
+          this.paginatedEnvironData();
+        }).catch(error => {
+          console.log("历史报表错误", error);
+        });
       },
 
       exportHistory() {
@@ -5178,15 +5447,163 @@
         if (!range || range.length !== 2 || !range[0] || !range[1]) {
           return;
         }
+        function formatTime1(dateStr) {
+          const date = new Date(dateStr);
+          const year = date.getFullYear();
+          const month = (date.getMonth() + 1).toString().padStart(2, '0');
+          const day = date.getDate().toString().padStart(2, '0');
+          return `${year}-${month}-${day}T00:00:00`;
+        }
+
+        function formatTime2(dateStr) {
+          const date = new Date(dateStr);
+          const year = date.getFullYear();
+          const month = (date.getMonth() + 1).toString().padStart(2, '0');
+          const day = date.getDate().toString().padStart(2, '0');
+          return `${year}-${month}-${day}T23:59:59`;
+        }
+
+        const itemType = this.queryEnvironData.item && this.queryEnvironData.item[0];
+        if (!itemType) {
+          return;
+        }
+        const second = this.queryEnvironData.item && this.queryEnvironData.item[1];
+
+        const baseUrl = 'http://127.0.0.1:8080';
+        const startTime = formatTime1(this.queryEnvironData.dateRange[0]);
+        const endTime = formatTime2(this.queryEnvironData.dateRange[1]);
+
+        let url = '';
+        let data = {
+          startTime,
+          endTime,
+        };
+
+        if (itemType === 'control_param') {
+          url = `${baseUrl}/controlParameter`;
+          data = Object.assign({}, data, {
+            names: second ? [second] : [],
+          });
+        } else if (itemType === 'device_status') {
+          url = `${baseUrl}/deviceStatus`;
+          data = Object.assign({}, data, {
+            devNames: second ? [second] : [],
+          });
+        } else if (itemType === 'sensor') {
+          url = `${baseUrl}/sensor`;
+          data = Object.assign({}, data, {
+            devNames: second ? [second] : [],
+          });
+        } else if (itemType === 'spray_record') {
+          url = `${baseUrl}/sprayRecord`;
+          data = Object.assign({}, data, {
+            names: second ? [second] : [],
+          });
+        } else if (itemType === 'product_hourly') {
+          url = `${baseUrl}/productHourly`;
+        } else if (itemType === 'product_daily') {
+          url = `${baseUrl}/productDaily`;
+        } else if (itemType === 'quality_result') {
+          url = `${baseUrl}/qualityDetection`;
+        }
+
+        if (!url) {
+          return;
+        }
+
+        console.log('导出请求', url, data);
+
+        axios.post(url, data, {
+          headers: {'Content-Type': 'application/json; charset=UTF-8'}
+        }).then(response => {
+          const res = response.data;
+          let rows = [];
+
+          if (res) {
+            if (Array.isArray(res.data)) {
+              rows = res.data;
+            } else if (Array.isArray(res.records)) {
+              rows = res.records;
+            } else if (Array.isArray(res.rows)) {
+              rows = res.rows;
+            } else if (res.data && typeof res.data === 'object') {
+              const inner = res.data;
+              if (Array.isArray(inner.records)) {
+                rows = inner.records;
+              } else if (Array.isArray(inner.rows)) {
+                rows = inner.rows;
+              } else if (Array.isArray(inner.list)) {
+                rows = inner.list;
+              }
+            } else if (Array.isArray(res)) {
+              rows = res;
+            }
+          }
+
+          if (!rows || !rows.length) {
+            if (this.$message) {
+              this.$message({
+                message: '当前条件下没有可导出的数据',
+                type: 'warning',
+                duration: 2000
+              });
+            }
+            return;
+          }
+
+          const convertTimeToLocal = function (timeStr) {
+            if (!timeStr) {
+              return timeStr;
+            }
+            const date = new Date(timeStr);
+            if (isNaN(date.getTime())) {
+              return timeStr;
+            }
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+          };
+
+          const exportRows = rows.map(function (item) {
+            const obj = Object.assign({}, item);
+            if (obj.time) {
+              obj.time = convertTimeToLocal(obj.time);
+            }
+            return obj;
+          });
+
+          const ws = XLSX.utils.json_to_sheet(exportRows);
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, 'sheet1');
+          const wbout = XLSX.write(wb, {bookType: 'xlsx', type: 'array'});
+          const fileName = `${itemType}_${startTime.slice(0, 10)}_${endTime.slice(0, 10)}.xlsx`;
+          saveAs(new Blob([wbout], {type: 'application/octet-stream'}), fileName);
+          if (this.$message) {
+            this.$message({
+              message: '导出成功',
+              type: 'success',
+              duration: 2000
+            });
+          }
+        }).catch(error => {
+          console.log("导出报表错误", error && error.response ? error.response : error);
+          if (this.$message) {
+            this.$message({
+              message: '导出报表失败',
+              type: 'error',
+              duration: 2000
+            });
+          }
+        });
       },
 
 
       paginatedEnvironData() {
-        const start = (this.queryEnvironData.currentPage - 1) * this.queryEnvironData.pageSize;
-        const end = start + this.queryEnvironData.pageSize;
-        this.showEnvironData = this.tableEnvironDataHistory.slice(start, end);
-        console.log("展示数据", this.showEnvironData);
-
+        this.showEnvironData = this.tableEnvironDataHistory;
       },
 
       formatTimeHistoryShow(value) {
@@ -5198,8 +5615,9 @@
         const day = String(date.getDate()).padStart(2, '0');
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
 
-        return `${year}-${month}-${day} ${hours}:${minutes}`;
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
       },
       formatNA(row, column) {
         const value = row[column.property];
@@ -5251,6 +5669,12 @@
       },
 
 
+      formatSensorValue(value) {
+        if (value && value.value != null) {
+          return value.value;
+        }
+        return '';
+      },
       formatTemperature(value) {
         if (value.temperature != null) {
           return Math.floor(value.temperature / 100); // 除以 100 并取整
@@ -5392,6 +5816,11 @@
 .system-icon.warning {
   border-color: #E6A23C;
   background: rgba(230, 162, 60, 0.2);
+}
+
+.system-icon.error {
+  border-color: #F56C6C;
+  background: rgba(245, 108, 108, 0.2);
 }
 
 /* 液位计样式 */
@@ -5685,12 +6114,17 @@
   }
 
   .grid-content-user .user-icon,
-  .grid-content-user .report-icon {
+  .grid-content-user .report-icon,
+  .grid-content-user .upgrade-icon {
     cursor: pointer;
   }
 
-  .grid-content-user .report-icon {
+  .grid-content-user i {
     margin-left: 1vw;
+  }
+
+  .grid-content-user i:first-child {
+    margin-left: 0;
   }
 
   .el-aside {
